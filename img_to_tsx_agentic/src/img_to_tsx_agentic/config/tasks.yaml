@@ -1,0 +1,23 @@
+ui_analysis_task:
+  description: |
+    Analyse the UI image provided at runtime and produce an exhaustive
+    technical report covering colours, typography, layout, components,
+    responsive strategy and accessibility.
+  expected_output: "Markdown report"
+
+design_system_task:
+  description: |
+    Produce a JSON design system from the analyst's report suitable
+    for Tailwind + Next.js.
+  expected_output: "design-system.json"
+
+component_task:
+  description: |
+    Generate a complete Next.js 15 TSX page that implements the
+    design system and reflects the original UI.
+  expected_output: "GeneratedComponent.tsx"
+
+file_task:
+  description: |
+    Save analysis, design JSON and TSX into ./outputs.
+  expected_output: "Files written confirmation"

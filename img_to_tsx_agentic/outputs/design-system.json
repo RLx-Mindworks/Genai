@@ -1,0 +1,119 @@
+{
+  "colors": {
+    "primary": {
+      "DEFAULT": "#3D68FF",
+      "dark": "#2650F8"
+    },
+    "accent": "#32DBA0",
+    "neutral": {
+      "darkest": "#222222",
+      "dark": "#555555",
+      "medium": "#999999",
+      "light": "#DDDDDD"
+    },
+    "background": {
+      "DEFAULT": "#F8F8F8",
+      "white": "#FFFFFF"
+    }
+  },
+  "typography": {
+    "h1": {
+      "fontSize": "text-4xl",
+      "fontWeight": "font-bold",
+      "color": "neutral.darkest"
+    },
+    "h2": {
+      "fontSize": "text-3xl",
+      "fontWeight": "font-bold",
+      "color": "neutral.darkest"
+    },
+    "h3": {
+      "fontSize": "text-2xl",
+      "fontWeight": "font-bold",
+      "color": "neutral.darkest"
+    },
+    "body": {
+      "fontSize": "text-base",
+      "fontWeight": "font-normal",
+      "color": "neutral.dark"
+    },
+    "label": {
+      "fontSize": "text-sm",
+      "fontWeight": "font-light",
+      "color": "neutral.medium"
+    }
+  },
+  "components": {
+    "button": {
+      "primary": {
+        "backgroundColor": "primary.DEFAULT",
+        "color": "background.white",
+        "fontWeight": "font-semibold",
+        "borderRadius": "rounded-md",
+        "padding": "py-2 px-4",
+        "hover": {
+          "backgroundColor": "primary.dark"
+        }
+      },
+      "secondary": {
+        "backgroundColor": "transparent",
+        "color": "neutral.darkest",
+        "border": "border border-neutral-darkest",
+         "fontWeight": "font-semibold",
+        "borderRadius": "rounded-md",
+        "padding": "py-2 px-4",
+        "hover": {
+          "backgroundColor": "neutral.light"
+        }
+      },
+       "accent": {
+        "backgroundColor": "accent",
+        "color": "background.white",
+        "fontWeight": "font-semibold",
+        "borderRadius": "rounded-md",
+        "padding": "py-2 px-4",
+        "hover": {
+          "backgroundColor": "accent.dark"
+        }
+      }
+    },
+    "card": {
+      "backgroundColor": "background.white",
+      "borderRadius": "rounded-lg",
+      "boxShadow": "shadow-md",
+      "padding": "p-4"
+    },
+    "input": {
+      "backgroundColor": "background.white",
+      "border": "border border-neutral-light",
+      "borderRadius": "rounded-md",
+      "padding": "py-2 px-3",
+      "color": "neutral.darkest"
+    },
+    "slider": {
+      "track": {
+        "backgroundColor": "neutral.light"
+      },
+      "thumb": {
+        "backgroundColor": "primary.DEFAULT"
+      }
+    },
+    "navigation": {
+      "link":{
+        "color": "neutral.dark",
+        "hover": {
+          "color": "primary.DEFAULT"
+        }
+      }
+    }
+  },
+  "layout": {
+    "grid": {
+      "columns": 4,
+      "gap": 4
+    }
+  },
+  "accessibility": {
+    "focusRing": "focus:outline-none focus:ring-2 focus:ring-primary-DEFAULT focus:ring-offset-2"
+  }
+}
