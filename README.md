@@ -9,4 +9,4 @@ git checkout RLx-Collective
 git pull origin RLx-Collective
 
 ### 4 - Create your own local branch
-git checkout -b <branch-name> origin/RLx-Collective   
+git checkout -b (branch-name) origin/RLx-Collective   
