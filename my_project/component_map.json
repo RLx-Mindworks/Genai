@@ -1,0 +1,294 @@
+```tsx
+import React, { useState } from "react";
+
+// --- Mini Chart Components ---
+
+function BarChart({ data, max = 500 }: { data: number[]; max?: number }) {
+  return (
+    <div className="flex items-end h-16 space-x-1">
+      {data.map((v, i) => (
+        <div
+          key={i}
+          className="w-2 bg-black/70 dark:bg-white/70 rounded"
+          style={{
+            height: `${Math.max(12, (v / max) * 60)}px`,
+            transition: 'height .3s',
+          }}
+        ></div>
+      ))}
+    </div>
+  );
+}
+
+function LineChart({ points, color = "#22223A" }: { points: number[]; color?: string }) {
+  const width = 200, height = 50, max = Math.max(...points) || 1;
+  const step = width / (points.length - 1);
+  const y = (v: number) => height - (v / max) * (height - 10);
+  const d = points.map((v, i) => `${i * step},${y(v)}`).join(" ");
+  return (
+    <svg width={width} height={height} className="block">
+      <polyline fill="none" stroke={color} strokeWidth={2} points={d} />
+    </svg>
+  );
+}
+
+function Calendar({
+  month,
+  year,
+  selected,
+}: {
+  month: number;
+  year: number;
+  selected: number[];
+}) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDay = new Date(year, month, 1).getDay();
+  return (
+    <div className="grid grid-cols-7 gap-0.5 text-center text-xs">
+      {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map((d) => (
+        <div key={d} className="font-medium py-0.5">{d}</div>
+      ))}
+      {Array(firstDay)
+        .fill(null)
+        .map((_, i) => (
+          <div key={`sp${i}`}></div>
+        ))}
+      {Array(daysInMonth)
+        .fill(null)
+        .map((_, d) => {
+          const day = d + 1;
+          const isSelected = selected.includes(day);
+          return (
+            <div
+              key={day}
+              className={`py-1 rounded ${isSelected
+                ? "bg-black text-white"
+                : "bg-transparent text-gray-900 dark:text-gray-100"
+                }`}
+            >
+              {day}
+            </div>
+          );
+        })}
+    </div>
+  );
+}
+
+// --- Main Dashboard ---
+
+const Dashboard = () => {
+  // State for forms and toggles
+  const [moveGoal, setMoveGoal] = useState<number>(350);
+  const [plan, setPlan] = useState("Starter");
+  // Demo Data
+  const revenueData = [15000, 14600, 14100, 14300, 14500, 14200, 15700];
+  const subsData = [60, 400, 800, 300, 950, 1100, 2350];
+  const moveData = [310, 365, 332, 350, 340, 320, 410, 390, 355, 361, 370, 340, 375, 355];
+  const exData = [40, 38, 150, 48, 55, 47, 49];
+  const exNorm = [35, 35, 35, 35, 35, 35, 35];
+  const payments = [
+    { status: "Paid", email: "sofia@email.com", amount: "$190.00" },
+    { status: "Paid", email: "john@email.com", amount: "$39.99" },
+    { status: "Pending", email: "evan@email.com", amount: "$68.50" }
+  ];
+
+  return (
+    <div className="bg-white min-h-screen p-4 md:p-8 grid grid-cols-1 md:grid-cols-3 gap-6 font-sans text-[15px] text-gray-900">
+      {/* Left/Main column */}
+      <div className="md:col-span-2 flex flex-col gap-6">
+        {/* Revenue & Subscriptions */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          {/* Total Revenue */}
+          <div className="rounded-lg border p-5 bg-white shadow-sm space-y-3">
+            <div className="text-xs text-gray-500">Total Revenue</div>
+            <div className="flex flex-row items-center justify-between">
+              <div className="text-2xl font-bold">$15,231.89</div>
+              <span className="text-green-600 text-xs font-semibold pl-2">+20.1%</span>
+            </div>
+            <LineChart points={revenueData} color="#22c55e" />
+            <div className="text-xs text-gray-400">+20.1% from last month</div>
+          </div>
+          {/* Subscriptions */}
+          <div className="rounded-lg border p-5 bg-white shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="text-xs text-gray-500">Subscriptions</div>
+              <div className="text-blue-600 text-xs font-medium cursor-pointer">View More</div>
+            </div>
+            <div className="flex flex-row items-center justify-between">
+              <div className="text-2xl font-bold">+2,350</div>
+              <span className="text-green-600 text-xs font-semibold pl-2">+180.1%</span>
+            </div>
+            <LineChart points={subsData} color="#3b82f6" />
+            <div className="text-xs text-gray-400">+180.1% from last month</div>
+          </div>
+        </div>
+
+        {/* Row 2: Calendar, Move Goal, Exercise */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {/* Calendar */}
+          <div className="rounded-lg border p-4 bg-white shadow-sm flex flex-col items-center justify-between">
+            <div className="text-xs text-gray-700 font-medium mb-2">June 2025</div>
+            <Calendar month={5} year={2025} selected={[5, 6, 13]} />
+          </div>
+          {/* Move Goal */}
+          <div className="rounded-lg border p-4 bg-white shadow-sm flex flex-col items-center">
+            <div className="text-xs text-gray-700 font-medium mb-2">Move Goal</div>
+            <div className="flex flex-row space-x-2 items-center mb-2">
+              <button
+                onClick={() => setMoveGoal((m) => Math.max(100, m - 10))}
+                className="bg-gray-200 rounded px-2 text-lg font-bold"
+                aria-label="decrease"
+              >-</button>
+              <span className="text-2xl font-bold">{moveGoal}</span>
+              <span className="ml-1 text-xs">CALORIES/DAY</span>
+              <button
+                onClick={() => setMoveGoal((m) => Math.min(999, m + 10))}
+                className="bg-gray-200 rounded px-2 text-lg font-bold"
+                aria-label="increase"
+              >+</button>
+            </div>
+            <BarChart data={moveData} max={500} />
+            <button className="mt-2 px-3 py-1 rounded bg-gray-900 text-white text-xs font-semibold">
+              Set Goal
+            </button>
+          </div>
+          {/* Exercise Minutes */}
+          <div className="rounded-lg border p-4 bg-white shadow-sm flex flex-col">
+            <div className="text-xs text-gray-700 font-medium mb-1">Exercise Minutes</div>
+            <div className="text-xs text-gray-500 mb-2">Your exercise minutes are ahead of where you normally are.</div>
+            <LineChart points={exData} color="#111827" />
+            <LineChart points={exNorm} color="#a3a3a3" />
+          </div>
+        </div>
+
+        {/* Payments Table */}
+        <div className="rounded-lg border p-4 bg-white shadow-sm">
+          <div className="text-xs text-gray-700 font-medium mb-3">Payments</div>
+          <div className="mb-2">
+            <button className="bg-black text-white text-xs px-2 py-1 rounded font-medium">
+              Add Payment
+            </button>
+          </div>
+          <div className="w-full overflow-x-auto">
+            <table className="w-full table-auto text-xs">
+              <thead>
+                <tr className="bg-gray-50 text-gray-700 text-xs">
+                  <th className="px-2 py-1 text-left">Status</th>
+                  <th className="px-2 py-1 text-left">Email</th>
+                  <th className="px-2 py-1 text-left">Amount</th>
+                </tr>
+              </thead>
+              <tbody>
+                {payments.map((p, i) => (
+                  <tr key={i}>
+                    <td className="px-2 py-2">
+                      <span className={`rounded px-2 py-0.5 ${
+                        p.status === "Paid"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-yellow-100 text-yellow-700"
+                        }`}>{p.status}</span>
+                    </td>
+                    <td className="px-2 py-2">{p.email}</td>
+                    <td className="px-2 py-2">{p.amount}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Sidebar with forms */}
+      <div className="flex flex-col gap-6">
+        {/* Upgrade Subscription */}
+        <div className="rounded-lg border bg-white shadow-sm p-5 flex flex-col space-y-4">
+          <div className="font-medium text-xs">Upgrade your subscription</div>
+          <div className="text-xs text-gray-400">
+            You are currently on the free plan. Upgrade to the pro plan to get access to all features.
+          </div>
+          <form className="space-y-2">
+            <input type="text" placeholder="Name" className="w-full px-2 py-1 bg-gray-50 border rounded text-xs" />
+            <input type="email" placeholder="Email" className="w-full px-2 py-1 bg-gray-50 border rounded text-xs" />
+            <input type="text" placeholder="Card Number" className="w-full px-2 py-1 bg-gray-50 border rounded text-xs" />
+            <div className="flex space-x-2">
+              <input type="text" placeholder="MM/YY" className="w-1/2 px-2 py-1 bg-gray-50 border rounded text-xs" />
+              <input type="text" placeholder="CVC" className="w-1/2 px-2 py-1 bg-gray-50 border rounded text-xs" />
+            </div>
+            <div className="flex space-x-2 mt-1">
+              <button
+                className={`flex-1 px-2 py-1 rounded border ${plan === "Starter" ? "border-black bg-black text-white" : ""} text-xs`}
+                type="button"
+                onClick={() => setPlan("Starter")}
+              >Starter Plan</button>
+              <button
+                className={`flex-1 px-2 py-1 rounded border ${plan === "Pro" ? "border-black bg-black text-white" : ""} text-xs`}
+                type="button"
+                onClick={() => setPlan("Pro")}
+              >Pro Plan</button>
+            </div>
+            <textarea className="w-full px-2 py-1 bg-gray-50 border rounded text-xs mt-1" placeholder="Enter notes" rows={2} />
+            <button type="submit" className="w-full mt-2 px-3 py-1 rounded bg-black text-white text-xs font-bold">
+              Upgrade Now
+            </button>
+          </form>
+        </div>
+
+        {/* Create Account */}
+        <div className="rounded-lg border bg-white shadow-sm p-5 flex flex-col space-y-4">
+          <div className="font-medium text-xs">Create an account</div>
+          <div className="flex space-x-2">
+            <button className="flex-1 bg-gray-900 text-white text-xs py-1 rounded font-semibold">
+              GitHub
+            </button>
+            <button className="flex-1 bg-gray-100 text-gray-800 text-xs py-1 rounded font-semibold">
+              Google
+            </button>
+          </div>
+          <div className="text-xs text-gray-400 text-center">OR CONTINUE WITH</div>
+          <form className="space-y-2">
+            <input type="email" placeholder="Email" className="w-full px-2 py-1 bg-gray-50 border rounded text-xs" />
+            <input type="password" placeholder="Password" className="w-full px-2 py-1 bg-gray-50 border rounded text-xs" />
+            <button type="submit" className="w-full mt-2 px-3 py-1 rounded bg-black text-white text-xs font-bold">
+              Create account
+            </button>
+          </form>
+          <div className="flex items-center mt-2 text-xs">
+            <span className="font-semibold mr-2">Sofia Davis</span> m@example.com
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Dashboard;
+```
+
+**Component Mapping:**
+
+1.  **Dashboard**
+    *   Imports: `React, { useState }`
+    *   Exports: `Dashboard` (default)
+    *   Uses: `LineChart`, `BarChart`, `Calendar`
+    *   State: `moveGoal`, `plan`
+
+2.  **BarChart**
+    *   Imports: `None`
+    *   Exports: `BarChart` (named)
+    *   Used By: `Dashboard`
+
+3.  **LineChart**
+    *   Imports: `None`
+    *   Exports: `LineChart` (named)
+    *   Used By: `Dashboard`
+
+4.  **Calendar**
+    *   Imports: `None`
+    *   Exports: `Calendar` (named)
+    *   Used By: `Dashboard`
+
+**Relationships:**
+
+*   `Dashboard` imports and uses `LineChart`, `BarChart`, and `Calendar`.
+*   `BarChart`, `LineChart`, and `Calendar` are independent components that don't import anything from the provided code. They are only used by `Dashboard`.
+*   `Dashboard` manages state (`moveGoal`, `plan`) that affects its rendering.

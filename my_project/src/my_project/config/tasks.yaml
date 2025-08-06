@@ -1,0 +1,19 @@
+# src/component_analyzer/config/tasks.yaml
+
+parse_codebase_task:
+  description: >
+    Read the {tsx_file} and identify components, their imports/exports, and linkages.
+    Output a mapping of components and their relationships.
+  expected_output: >
+    A structured list or mapping of all components and their direct connections (which component imports/uses which).
+  agent: code_parser
+  output_file: component_map.json
+
+report_task:
+  description: >
+    Given the generated components map, write a markdown report summarizing key component linkages and architecture insights.
+  expected_output: >
+    Well-structured README.md-style summary with diagrams or tables (as possible) explaining component relationships.
+  agent: report_generator
+  context: [parse_codebase_task]
+  output_file: component_report.md
