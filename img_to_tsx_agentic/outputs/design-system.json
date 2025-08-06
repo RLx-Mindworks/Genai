@@ -1,119 +1,69 @@
 {
   "colors": {
-    "primary": {
-      "DEFAULT": "#3D68FF",
-      "dark": "#2650F8"
-    },
-    "accent": "#32DBA0",
-    "neutral": {
-      "darkest": "#222222",
-      "dark": "#555555",
-      "medium": "#999999",
-      "light": "#DDDDDD"
-    },
-    "background": {
-      "DEFAULT": "#F8F8F8",
-      "white": "#FFFFFF"
-    }
+    "primary": "#4A90E2",
+    "secondary": "#6A789C",
+    "background": "#FFFFFF"
   },
-  "typography": {
-    "h1": {
-      "fontSize": "text-4xl",
-      "fontWeight": "font-bold",
-      "color": "neutral.darkest"
+  "components": [
+    {
+      "name": "button_primary",
+      "style": "bg-primary text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[#3D77FD]"
     },
-    "h2": {
-      "fontSize": "text-3xl",
-      "fontWeight": "font-bold",
-      "color": "neutral.darkest"
+    {
+      "name": "button_secondary",
+      "style": "bg-secondary text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[#586483]"
     },
-    "h3": {
-      "fontSize": "text-2xl",
-      "fontWeight": "font-bold",
-      "color": "neutral.darkest"
+    {
+      "name": "button_highlight",
+      "style": "bg-[#50E3C2] text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[#43C2A9]"
     },
-    "body": {
-      "fontSize": "text-base",
-      "fontWeight": "font-normal",
-      "color": "neutral.dark"
+    {
+      "name": "card_default",
+      "style": "bg-background rounded-xl shadow-md p-8 flex flex-col items-center text-center text-[#1A1A1A]"
     },
-    "label": {
-      "fontSize": "text-sm",
-      "fontWeight": "font-light",
-      "color": "neutral.medium"
+    {
+      "name": "card_highlighted",
+      "style": "bg-primary text-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center"
+    },
+    {
+      "name": "input_text",
+      "style": "bg-white border border-gray-300 rounded-md px-4 py-2 text-base text-[#1A1A1A] placeholder-[#888888] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+    },
+    {
+      "name": "heading_1",
+      "style": "text-5xl lg:text-6xl font-extrabold text-[#1A1A1A] text-center leading-tight"
+    },
+    {
+      "name": "heading_2",
+      "style": "text-3xl lg:text-4xl font-semibold text-[#1A1A1A] leading-tight"
+    },
+    {
+      "name": "body_text",
+      "style": "text-base lg:text-lg font-normal text-[#1A1A1A] leading-relaxed"
+    },
+    {
+      "name": "pricing_figure",
+      "style": "text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] leading-none"
+    },
+    {
+      "name": "pricing_period",
+      "style": "text-xs lg:text-sm font-normal text-[#888888]"
+    },
+    {
+      "name": "feature_list_item",
+      "style": "text-sm lg:text-base font-normal text-[#1A1A1A]"
+    },
+    {
+      "name": "section_background",
+      "style": "bg-[#E8EBF2]"
+    },
+    {
+      "name": "text_primary_color",
+      "style": "text-[#1A1A1A]"
+    },
+    {
+      "name": "text_secondary_color",
+      "style": "text-[#888888]"
     }
-  },
-  "components": {
-    "button": {
-      "primary": {
-        "backgroundColor": "primary.DEFAULT",
-        "color": "background.white",
-        "fontWeight": "font-semibold",
-        "borderRadius": "rounded-md",
-        "padding": "py-2 px-4",
-        "hover": {
-          "backgroundColor": "primary.dark"
-        }
-      },
-      "secondary": {
-        "backgroundColor": "transparent",
-        "color": "neutral.darkest",
-        "border": "border border-neutral-darkest",
-         "fontWeight": "font-semibold",
-        "borderRadius": "rounded-md",
-        "padding": "py-2 px-4",
-        "hover": {
-          "backgroundColor": "neutral.light"
-        }
-      },
-       "accent": {
-        "backgroundColor": "accent",
-        "color": "background.white",
-        "fontWeight": "font-semibold",
-        "borderRadius": "rounded-md",
-        "padding": "py-2 px-4",
-        "hover": {
-          "backgroundColor": "accent.dark"
-        }
-      }
-    },
-    "card": {
-      "backgroundColor": "background.white",
-      "borderRadius": "rounded-lg",
-      "boxShadow": "shadow-md",
-      "padding": "p-4"
-    },
-    "input": {
-      "backgroundColor": "background.white",
-      "border": "border border-neutral-light",
-      "borderRadius": "rounded-md",
-      "padding": "py-2 px-3",
-      "color": "neutral.darkest"
-    },
-    "slider": {
-      "track": {
-        "backgroundColor": "neutral.light"
-      },
-      "thumb": {
-        "backgroundColor": "primary.DEFAULT"
-      }
-    },
-    "navigation": {
-      "link":{
-        "color": "neutral.dark",
-        "hover": {
-          "color": "primary.DEFAULT"
-        }
-      }
-    }
-  },
-  "layout": {
-    "grid": {
-      "columns": 4,
-      "gap": 4
-    }
-  },
-  "accessibility": {
-    "focusRing": "focus:outline-none focus:ring-2 focus:ring-primary-DEFAULT focus:ring-offset-2"
-  }
+  ]
 }

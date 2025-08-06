@@ -1,0 +1,52 @@
+{
+  "colors": {
+    "primary": "#007bff",
+    "secondary": "#6c757d",
+    "background": "#ffffff",
+    "error": "#dc3545"
+  },
+  "components": [
+    {
+      "name": "button",
+      "styles": {
+        "default": "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
+        "secondary": "bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded",
+        "danger": "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+      }
+    },
+    {
+      "name": "input",
+      "styles": {
+        "default": "border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      }
+    },
+    {
+      "name": "heading1",
+      "styles": "text-3xl font-bold"
+    },
+    {
+      "name": "paragraph",
+      "styles": "text-gray-700"
+    }
+  ],
+  "typography": {
+    "fontFamilies": {
+      "primary": "sans-serif"
+    },
+    "fontSizes": {
+      "h1": "3rem",
+      "h2": "2rem",
+      "body": "1rem"
+    }
+  },
+  "spacing": {
+    "unit": 8,
+    "sizes": {
+      "xs": "0.25rem",
+      "sm": "0.5rem",
+      "md": "1rem",
+      "lg": "2rem",
+      "xl": "4rem"
+    }
+  }
+}
