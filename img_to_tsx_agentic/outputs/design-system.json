@@ -1,69 +1,51 @@
 {
   "colors": {
-    "primary": "#4A90E2",
-    "secondary": "#6A789C",
-    "background": "#FFFFFF"
+    "primary": "#007BFF",
+    "secondary": "#17A2B8",
+    "background": "#FFFFFF",
+    "text_primary": "#333333",
+    "text_secondary": "#6C757D",
+    "background_light_gray": "#F8F9FA"
+  },
+  "typography": {
+    "font_family": "sans-serif",
+    "heading_h1": "text-5xl font-extrabold text-gray-900",
+    "heading_h2": "text-3xl font-bold text-gray-900",
+    "body_text": "text-base text-gray-800",
+    "cta_text": "font-bold"
   },
   "components": [
     {
-      "name": "button_primary",
-      "style": "bg-primary text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[#3D77FD]"
+      "name": "button_primary_filled",
+      "style": "bg-blue-600 text-white font-bold py-3 px-6 rounded-md shadow-md hover:bg-blue-700"
     },
     {
-      "name": "button_secondary",
-      "style": "bg-secondary text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[#586483]"
+      "name": "button_secondary_outlined",
+      "style": "bg-white text-blue-600 border border-blue-600 font-bold py-3 px-6 rounded-md hover:bg-blue-50"
     },
     {
-      "name": "button_highlight",
-      "style": "bg-[#50E3C2] text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[#43C2A9]"
+      "name": "button_accent_filled",
+      "style": "bg-teal-500 text-white font-bold py-3 px-6 rounded-md shadow-md hover:bg-teal-600"
     },
     {
-      "name": "card_default",
-      "style": "bg-background rounded-xl shadow-md p-8 flex flex-col items-center text-center text-[#1A1A1A]"
+      "name": "pricing_card_default",
+      "style": "bg-white p-8 rounded-lg shadow-md border border-gray-200"
     },
     {
-      "name": "card_highlighted",
-      "style": "bg-primary text-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center"
+      "name": "pricing_card_emphasized",
+      "style": "bg-blue-600 text-white p-8 rounded-lg shadow-xl"
     },
     {
       "name": "input_text",
-      "style": "bg-white border border-gray-300 rounded-md px-4 py-2 text-base text-[#1A1A1A] placeholder-[#888888] focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+      "style": "border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
     },
     {
-      "name": "heading_1",
-      "style": "text-5xl lg:text-6xl font-extrabold text-[#1A1A1A] text-center leading-tight"
+      "name": "slider_track",
+      "style": "bg-blue-600 h-2 rounded-full"
     },
     {
-      "name": "heading_2",
-      "style": "text-3xl lg:text-4xl font-semibold text-[#1A1A1A] leading-tight"
-    },
-    {
-      "name": "body_text",
-      "style": "text-base lg:text-lg font-normal text-[#1A1A1A] leading-relaxed"
-    },
-    {
-      "name": "pricing_figure",
-      "style": "text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] leading-none"
-    },
-    {
-      "name": "pricing_period",
-      "style": "text-xs lg:text-sm font-normal text-[#888888]"
-    },
-    {
-      "name": "feature_list_item",
-      "style": "text-sm lg:text-base font-normal text-[#1A1A1A]"
-    },
-    {
-      "name": "section_background",
-      "style": "bg-[#E8EBF2]"
-    },
-    {
-      "name": "text_primary_color",
-      "style": "text-[#1A1A1A]"
-    },
-    {
-      "name": "text_secondary_color",
-      "style": "text-[#888888]"
+      "name": "slider_thumb",
+      "style": "w-6 h-6 bg-white rounded-full shadow-md border-2 border-blue-600"
     }
   ]
 }

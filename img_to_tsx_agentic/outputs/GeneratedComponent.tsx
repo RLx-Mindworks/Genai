@@ -1,345 +1,386 @@
+'use client'; // This component uses useState, making it a client component.
+
 import React, { useState } from 'react';
-import Link from 'next/link';
 
-// --- Interfaces ---
+// --- Type Definitions ---
 
-interface PricingFeature {
-  text: string;
-  included: boolean;
+interface NavItemProps {
+  label: string;
+  href: string;
 }
 
 interface PricingPlan {
-  id: string;
   name: string;
-  tagline: string;
   price: number;
-  period: string;
-  features: PricingFeature[];
-  buttonText: string;
-  buttonStyle: 'primary' | 'secondary' | 'highlight';
-  highlighted?: boolean;
+  pricePer: string; // e.g., "/month"
+  description: string;
+  features: string[];
+  isEmphasized?: boolean; // For the 'Pro Plan' style
 }
 
-// --- Design System Colors & Components Mapping ---
-// Note: In a real Next.js/Tailwind project, custom colors would be defined in tailwind.config.ts
-// and component styles might be extracted into separate utility classes or helper functions.
-// For a self-contained, copy-pasteable component without modifying tailwind.config.ts,
-// we're using direct hex values and full Tailwind class strings as provided by the design system.
+// --- Reusable Icon Components ---
+// These are simple SVG icons for visual flair, matching the UI analysis.
 
-const DS_COLORS = {
-  primary: '#4A90E2',
-  secondary: '#6A789C',
-  background: '#FFFFFF',
-  text_primary: '#1A1A1A',
-  text_secondary: '#888888',
-  section_background: '#E8EBF2',
-  button_highlight_color: '#50E3C2',
-  // Specific hover colors for buttons from design system
-  button_primary_hover: '#3D77FD',
-  button_secondary_hover: '#586483',
-  button_highlight_hover: '#43C2A9',
-};
+const CheckIcon: React.FC = () => (
+  <svg
+    className="w-5 h-5 text-blue-600 flex-shrink-0 mr-2"
+    fill="currentColor"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fillRule="evenodd"
+      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+      clipRule="evenodd"
+    ></path>
+  </svg>
+);
 
-const DS_COMPONENTS = {
-  button_primary: `bg-[${DS_COLORS.primary}] text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[${DS_COLORS.button_primary_hover}]`,
-  button_secondary: `bg-[${DS_COLORS.secondary}] text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[${DS_COLORS.button_secondary_hover}]`,
-  button_highlight: `bg-[${DS_COLORS.button_highlight_color}] text-white rounded-md px-6 py-3 text-base font-semibold whitespace-nowrap hover:bg-[${DS_COLORS.button_highlight_hover}]`,
-  card_default: `bg-[${DS_COLORS.background}] rounded-xl shadow-md p-8 flex flex-col items-center text-center text-[${DS_COLORS.text_primary}]`,
-  card_highlighted: `bg-[${DS_COLORS.primary}] text-white rounded-xl shadow-lg p-8 flex flex-col items-center text-center`,
-  input_text: `bg-white border border-gray-300 rounded-md px-4 py-2 text-base text-[${DS_COLORS.text_primary}] placeholder-[${DS_COLORS.text_secondary}] focus:outline-none focus:ring-2 focus:ring-[${DS_COLORS.primary}] focus:border-transparent`,
-  heading_1: `text-5xl lg:text-6xl font-extrabold text-[${DS_COLORS.text_primary}] text-center leading-tight`,
-  heading_2: `text-3xl lg:text-4xl font-semibold text-[${DS_COLORS.text_primary}] leading-tight`,
-  body_text: `text-base lg:text-lg font-normal text-[${DS_COLORS.text_primary}] leading-relaxed`,
-  pricing_figure: `text-4xl lg:text-5xl font-extrabold text-[${DS_COLORS.text_primary}] leading-none`,
-  pricing_period: `text-xs lg:text-sm font-normal text-[${DS_COLORS.text_secondary}]`,
-  feature_list_item: `text-sm lg:text-base font-normal text-[${DS_COLORS.text_primary}]`,
-  section_background: `bg-[${DS_COLORS.section_background}]`,
-  text_primary_color: `text-[${DS_COLORS.text_primary}]`,
-  text_secondary_color: `text-[${DS_COLORS.text_secondary}]`,
-};
+const UserIcon: React.FC = () => (
+  <svg
+    className="w-6 h-6 text-gray-600"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M17 20h-4a2 2 0 01-2-2v-2a4 4 0 00-4-4H7a4 4 0 00-4-4V6a2 2 0 012-2h10a2 2 0 012 2v2a4 4 0 004 4v2a2 2 0 01-2 2z"
+    ></path>
+  </svg>
+);
 
-// --- Component Data ---
+const EmailIcon: React.FC<{ className?: string }> = ({ className = '' }) => (
+  <svg
+    className={`w-8 h-8 ${className}`}
+    fill="currentColor"
+    viewBox="0 0 20 20"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+  </svg>
+);
 
-const pricingPlans: PricingPlan[] = [
-  {
-    id: 'free',
-    name: 'Free',
-    tagline: 'For individuals and small teams',
-    price: 0,
-    period: 'Forever',
-    features: [
-      { text: '10,000 requests/month', included: true },
-      { text: 'Basic analytics', included: true },
-      { text: 'Community support', included: true },
-      { text: 'Limited integrations', included: false },
-      { text: 'No custom domains', included: false },
-    ],
-    buttonText: 'Get Started',
-    buttonStyle: 'secondary',
-  },
-  {
-    id: 'pro',
-    name: 'Pro Plan',
-    tagline: 'For growing businesses and startups',
-    price: 12,
-    period: 'month',
-    features: [
-      { text: '1,000,000 requests/month', included: true },
-      { text: 'Advanced analytics', included: true },
-      { text: 'Priority email support', included: true },
-      { text: '50+ integrations', included: true },
-      { text: 'Custom domains', included: true },
-    ],
-    buttonText: 'Upgrade Now',
-    buttonStyle: 'highlight', // This button's style is also explicitly 'highlight'
-    highlighted: true,
-  },
-  {
-    id: 'business',
-    name: 'Business Plan',
-    tagline: 'For large teams and enterprises',
-    price: 49,
-    period: 'month',
-    features: [
-      { text: 'Unlimited requests', included: true },
-      { text: 'Real-time analytics', included: true },
-      { text: 'Dedicated account manager', included: true },
-      { text: 'All integrations', included: true },
-      { text: 'SLA guarantee', included: true },
-    ],
-    buttonText: 'Start Business Plan',
-    buttonStyle: 'secondary',
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    tagline: 'Custom solutions for your needs',
-    price: 99, // Placeholder, usually requires contact
-    period: 'month',
-    features: [
-      { text: 'On-premise deployment', included: true },
-      { text: '24/7 premium support', included: true },
-      { text: 'Custom feature development', included: true },
-      { text: 'Security audits', included: true },
-      { text: 'Dedicated infrastructure', included: true },
-    ],
-    buttonText: 'Contact Us',
-    buttonStyle: 'secondary',
-  },
-];
+// --- Main Page Component ---
 
 const PricingPage: React.FC = () => {
-  const [users, setUsers] = useState<number>(10);
+  // State for the user count slider, initialized based on the UI analysis
+  const [userCount, setUserCount] = useState<number>(250);
+  // State for the newsletter email input
   const [email, setEmail] = useState<string>('');
-  const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
 
-  // Helper to get button classes based on style and highlight state
-  const getButtonClass = (style: 'primary' | 'secondary' | 'highlight') => {
-    switch (style) {
-      case 'primary':
-        return DS_COMPONENTS.button_primary;
-      case 'secondary':
-        return DS_COMPONENTS.button_secondary;
-      case 'highlight':
-        return DS_COMPONENTS.button_highlight;
-      default:
-        return DS_COMPONENTS.button_secondary; // Fallback
-    }
+  // Navigation items data
+  const navItems: NavItemProps[] = [
+    { label: 'Home', href: '#' },
+    { label: 'Features', href: '#' },
+    { label: 'Pricing', href: '#' },
+    { label: 'Contact', href: '#' },
+  ];
+
+  // Pricing plan data based on UI analysis
+  const pricingPlans: PricingPlan[] = [
+    {
+      name: 'Basic Plan',
+      price: 9,
+      pricePer: '/month',
+      description: 'Perfect for small teams and individuals.',
+      features: ['Up to 10 users', '2GB of storage', 'Email support', 'Basic analytics'],
+      isEmphasized: false,
+    },
+    {
+      name: 'Pro Plan',
+      price: 29,
+      pricePer: '/month',
+      description: 'Ideal for growing businesses needing more power.',
+      features: [
+        'Up to 50 users',
+        '10GB of storage',
+        'Priority email support',
+        'Advanced analytics',
+        'Custom reports',
+      ],
+      isEmphasized: true, // This plan gets the emphasized styling
+    },
+    {
+      name: 'Enterprise Plan',
+      price: 79,
+      pricePer: '/month',
+      description: 'For large organizations with complex needs.',
+      features: [
+        'Unlimited users',
+        'Unlimited storage',
+        '24/7 Phone & Email support',
+        'Premium analytics',
+        'Dedicated account manager',
+      ],
+      isEmphasized: false,
+    },
+    {
+      name: 'Custom Plan',
+      price: 0, // Signifies "Contact Us" pricing
+      pricePer: '',
+      description: 'Tailored solutions for unique requirements.',
+      features: [
+        'Scalable user count',
+        'Flexible storage',
+        'Dedicated support',
+        'API access',
+        'On-premise option',
+      ],
+      isEmphasized: false,
+    },
+  ];
+
+  // Handler for the user count slider
+  const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUserCount(Number(event.target.value));
+  };
+
+  // Handler for the email input
+  const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEmail(event.target.value);
+  };
+
+  // Handler for newsletter form submission
+  const handleNewsletterSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    console.log('Subscribing email:', email);
+    alert(`Thanks for subscribing, ${email}!`); // Simple alert for demo
+    setEmail(''); // Clear input after submission
   };
 
   return (
-    <div className={`min-h-screen bg-[${DS_COLORS.background}] flex flex-col`}>
-      {/* Header */}
-      <header className={`py-4 px-6 md:px-12 flex items-center justify-between shadow-sm bg-white z-20`}>
-        <div className="flex items-center">
-          <Link href="/" className={`text-2xl font-bold text-[${DS_COLORS.primary}]`}>
-            YourLogo
-          </Link>
-        </div>
-
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
-          <Link href="#" className={`text-[${DS_COLORS.text_primary}] font-semibold hover:text-[${DS_COLORS.primary}]`}>
-            Home
-          </Link>
-          <Link href="#" className={`text-[${DS_COLORS.text_primary}] font-semibold hover:text-[${DS_COLORS.primary}]`}>
-            Features
-          </Link>
-          <Link href="#" className={`text-[${DS_COLORS.primary}] font-semibold hover:text-[${DS_COLORS.primary}]`}>
-            Pricing
-          </Link>
-          <Link href="#" className={`text-[${DS_COLORS.text_primary}] font-semibold hover:text-[${DS_COLORS.primary}]`}>
-            About
-          </Link>
-          <button className={DS_COMPONENTS.button_secondary}>
+    // Main container with global styles from Design System
+    <div className="min-h-screen bg-white text-gray-800 font-sans">
+      {/* Header / Navigation Bar */}
+      <header className="bg-white shadow-sm py-4">
+        <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl">
+          <div className="text-2xl font-bold text-blue-600">YourLogo</div>
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex space-x-8">
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                className="text-gray-800 hover:text-blue-600 transition-colors"
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+          {/* Hamburger menu icon for mobile (no functionality implemented for brevity) */}
+          <div className="md:hidden">
+            <button className="text-gray-800 focus:outline-none">
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M4 6h16M4 12h16m-7 6h7"
+                ></path>
+              </svg>
+            </button>
+          </div>
+          {/* Desktop CTA Button */}
+          <button className="hidden md:block bg-blue-600 text-white font-bold py-2 px-4 rounded-md shadow-md hover:bg-blue-700">
             Get Started
-          </button>
-        </nav>
-
-        {/* Mobile Menu Button */}
-        <div className="md:hidden">
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-            className={`text-[${DS_COLORS.text_primary}] focus:outline-none`}
-            aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-          >
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}></path>
-            </svg>
           </button>
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div 
-          className="md:hidden fixed inset-0 bg-white z-30 flex flex-col items-center py-8 space-y-6"
-          role="dialog"
-          aria-modal="true"
-          aria-label="Mobile Navigation"
-        >
-          <button 
-            onClick={() => setMobileMenuOpen(false)} 
-            className={`absolute top-4 right-6 text-[${DS_COLORS.text_primary}] focus:outline-none`}
-            aria-label="Close menu"
-          >
-            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-          </button>
-          <Link href="#" className={`text-2xl text-[${DS_COLORS.text_primary}] font-semibold hover:text-[${DS_COLORS.primary}]`} onClick={() => setMobileMenuOpen(false)}>
-            Home
-          </Link>
-          <Link href="#" className={`text-2xl text-[${DS_COLORS.text_primary}] font-semibold hover:text-[${DS_COLORS.primary}]`} onClick={() => setMobileMenuOpen(false)}>
-            Features
-          </Link>
-          <Link href="#" className={`text-2xl text-[${DS_COLORS.primary}] font-semibold hover:text-[${DS_COLORS.primary}]`} onClick={() => setMobileMenuOpen(false)}>
-            Pricing
-          </Link>
-          <Link href="#" className={`text-2xl text-[${DS_COLORS.text_primary}] font-semibold hover:text-[${DS_COLORS.primary}]`} onClick={() => setMobileMenuOpen(false)}>
-            About
-          </Link>
-          <button className={DS_COMPONENTS.button_secondary} onClick={() => setMobileMenuOpen(false)}>
-            Get Started
-          </button>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <main className="flex-grow container mx-auto px-4 py-16 md:py-24">
-        {/* Hero / Intro Section */}
-        <section className="text-center mb-16 md:mb-24 max-w-4xl mx-auto">
-          <h1 className={`${DS_COMPONENTS.heading_1} mb-4`}>
-            Choose Your Plan
-          </h1>
-          <p className={`${DS_COMPONENTS.body_text} ${DS_COMPONENTS.text_secondary_color} mb-8 max-w-2xl mx-auto`}>
-            Find the perfect plan for your needs. Scale up or down as your business grows.
-          </p>
-
-          {/* User Count Slider */}
-          <div className="flex flex-col items-center mb-12">
-            <div className={`text-xl font-semibold mb-4 text-[${DS_COLORS.text_primary}]`}>
-              <label htmlFor="user-range-slider" className="sr-only">Number of users:</label>
-              {users === 50 ? '50+ Users' : `${users} Users`}
-            </div>
-            <input
-              id="user-range-slider"
-              type="range"
-              min="1"
-              max="50"
-              value={users}
-              onChange={(e) => setUsers(parseInt(e.target.value))}
-              className={`w-full md:w-3/4 lg:w-1/2 h-2 rounded-lg appearance-none cursor-pointer accent-[${DS_COLORS.primary}]`}
-              style={{
-                // Custom background for the range input track to mimic the UI design
-                background: `linear-gradient(to right, ${DS_COLORS.primary} ${((users - 1) / 49) * 100}%, #ddd ${((users - 1) / 49) * 100}%)`
-              }}
-              aria-valuemin={1}
-              aria-valuemax={50}
-              aria-valuenow={users}
-              aria-valuetext={users === 50 ? '50 or more users' : `${users} users`}
-            />
-          </div>
-        </section>
-
-        {/* Pricing Cards Grid */}
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 justify-items-center">
-          {pricingPlans.map((plan) => (
-            <div
-              key={plan.id}
-              className={`${plan.highlighted ? DS_COMPONENTS.card_highlighted : DS_COMPONENTS.card_default} 
-                p-8 rounded-xl shadow-md transition-all duration-300 transform hover:scale-105 w-full max-w-sm`}
-              role="region"
-              aria-labelledby={`${plan.id}-plan-title`}
-            >
-              <h2 id={`${plan.id}-plan-title`} className={`${DS_COMPONENTS.heading_2} ${plan.highlighted ? 'text-white' : DS_COMPONENTS.text_primary_color} mb-2`}>
-                {plan.name}
-              </h2>
-              <p className={`${DS_COMPONENTS.body_text} ${plan.highlighted ? 'text-white' : DS_COMPONENTS.text_secondary_color} mb-6 text-sm`}>
-                {plan.tagline}
-              </p>
-
-              <div className="flex items-baseline mb-6">
-                <span className={`${DS_COMPONENTS.pricing_figure} ${plan.highlighted ? 'text-white' : DS_COMPONENTS.text_primary_color}`}>
-                  ${plan.price}
-                </span>
-                <span className={`${DS_COMPONENTS.pricing_period} ${plan.highlighted ? 'text-white/70' : DS_COLORS.text_secondary} ml-1`}>
-                  /{plan.period}
-                </span>
-              </div>
-
-              <ul className="mb-8 space-y-3 w-full text-left">
-                {plan.features.map((feature, index) => (
-                  <li key={index} className={`flex items-center ${DS_COMPONENTS.feature_list_item} ${plan.highlighted ? 'text-white' : DS_COMPONENTS.text_primary_color}`}>
-                    <svg className={`w-5 h-5 mr-3 flex-shrink-0 ${plan.highlighted ? `text-[${DS_COLORS.button_highlight_color}]` : DS_COMPONENTS.text_primary_color}`} fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
-                    </svg>
-                    {feature.text}
-                  </li>
-                ))}
-              </ul>
-
-              <button className={getButtonClass(plan.buttonStyle)}>
-                {plan.buttonText}
-              </button>
-            </div>
-          ))}
-        </section>
-      </main>
-
-      {/* Newsletter Section */}
-      <section className={`${DS_COMPONENTS.section_background} py-16 px-4 md:py-24 text-center`}>
+      {/* Hero Section with User Count Slider */}
+      <section className="bg-gray-50 py-16 px-4 text-center">
         <div className="max-w-3xl mx-auto">
-          <h2 className={`${DS_COMPONENTS.heading_2} text-[${DS_COLORS.text_primary}] mb-6`}>
-            Get our weekly updates
-          </h2>
-          <p className={`${DS_COMPONENTS.body_text} text-[${DS_COLORS.text_secondary}] mb-8`}>
-            Join our newsletter and stay up-to-date with our latest features, pricing, and offers.
+          <h1 className="text-5xl font-extrabold text-gray-900 leading-tight mb-4">
+            Choose your plan
+          </h1>
+          <p className="text-xl text-gray-600 mb-8">
+            Find the perfect plan for your business needs, scalable for teams of all sizes.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-xl mx-auto">
-            <label htmlFor="email-input" className="sr-only">Your Email</label>
-            <input
-              id="email-input"
-              type="email"
-              placeholder="Your Email"
-              className={`flex-grow w-full sm:w-auto ${DS_COMPONENTS.input_text}`}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              aria-label="Enter your email for newsletter"
-            />
-            <button className={`${DS_COMPONENTS.button_primary} w-full sm:w-auto`}>
-              Subscribe
-            </button>
+
+          <div className="flex flex-col items-center mb-12">
+            <div className="flex items-center space-x-3 mb-4">
+              <UserIcon />
+              <span className="text-3xl font-bold text-gray-900">{userCount} users</span>
+            </div>
+            {/* Custom styled slider using an input range */}
+            <div className="relative w-full max-w-lg h-2 bg-gray-200 rounded-full">
+              {/* This div acts as the filled part of the slider track */}
+              <div
+                className="absolute top-0 left-0 bg-blue-600 h-2 rounded-full"
+                style={{ width: `${(userCount / 1000) * 100}%` }} // Dynamic width based on userCount (max 1000 users)
+              ></div>
+              <input
+                type="range"
+                min="1"
+                max="1000" // Example max users
+                value={userCount}
+                onChange={handleSliderChange}
+                // Tailwind classes for the input range, targeting pseudo-elements for thumb styling
+                className="absolute top-0 left-0 w-full h-full appearance-none bg-transparent cursor-pointer
+                           [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-6 [&::-webkit-slider-thumb]:h-6
+                           [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:shadow-md
+                           [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-blue-600
+                           [&::-moz-range-thumb]:w-6 [&::-moz-range-thumb]:h-6
+                           [&::-moz-range-thumb]:bg-white [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:shadow-md
+                           [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-blue-600
+                           focus:outline-none" // Remove default focus outline
+                style={{ zIndex: 1 }} // Ensure thumb is clickable above the track fill
+              />
+            </div>
+            <p className="text-sm text-gray-600 mt-2">Adjust user count to see personalized pricing.</p>
           </div>
         </div>
       </section>
 
-      {/* Footer (Simple Placeholder) */}
-      <footer className="bg-white py-8 px-4 text-center text-[${DS_COLORS.text_secondary}]">
-        <p>&copy; {new Date().getFullYear()} YourCompany. All rights reserved.</p>
-        <div className="flex justify-center space-x-4 mt-4">
-          <Link href="#" className={`hover:text-[${DS_COLORS.primary}]`}>Privacy Policy</Link>
-          <Link href="#" className={`hover:text-[${DS_COLORS.primary}]`}>Terms of Service</Link>
+      {/* Pricing Plans Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {pricingPlans.map((plan, index) => (
+              <div
+                key={index}
+                // Apply specific pricing card styles based on isEmphasized flag
+                className=
+                  {plan.isEmphasized
+                    ? 'bg-blue-600 text-white p-8 rounded-lg shadow-xl flex flex-col items-start' // pricing_card_emphasized
+                    : 'bg-white p-8 rounded-lg shadow-md border border-gray-200 flex flex-col items-start' // pricing_card_default
+                  }
+              >
+                <h3
+                  className=
+                    {plan.isEmphasized
+                      ? 'text-3xl font-bold mb-4' // text-3xl font-bold for emphasized
+                      : 'text-3xl font-bold text-gray-900 mb-4' // heading_h2 for default
+                    }
+                >
+                  {plan.name}
+                </h3>
+                {/* Conditional rendering for price vs. "Contact Us" */}
+                {plan.price !== 0 ? (
+                  <div className="flex items-baseline mb-6">
+                    <span
+                      className=
+                        {plan.isEmphasized
+                          ? 'text-5xl font-extrabold' // text-5xl font-extrabold for emphasized
+                          : 'text-5xl font-extrabold text-gray-900' // heading_h1 for default
+                        }
+                    >
+                      ${plan.price}
+                    </span>
+                    <span
+                      className=
+                        {plan.isEmphasized
+                          ? 'text-xl font-medium ml-1'
+                          : 'text-xl font-medium text-gray-600 ml-1'
+                        }
+                    >
+                      {plan.pricePer}
+                    </span>
+                  </div>
+                ) : (
+                  <p className={plan.isEmphasized ? 'text-xl mb-6' : 'text-xl text-gray-700 mb-6'}>
+                    Contact Us
+                  </p>
+                )}
+
+                <p
+                  className=
+                    {plan.isEmphasized
+                      ? 'text-base mb-6 opacity-90' // body_text for emphasized (with slight opacity)
+                      : 'text-base text-gray-800 mb-6' // body_text for default
+                    }
+                >
+                  {plan.description}
+                </p>
+                <ul className="space-y-3 flex-grow mb-8">
+                  {plan.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-center">
+                      <CheckIcon />
+                      <span className={plan.isEmphasized ? '' : 'text-gray-800'}>
+                        {feature}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+                {/* Conditional rendering for button styles */}
+                {plan.name === 'Pro Plan' ? (
+                  <button className="bg-teal-500 text-white font-bold py-3 px-6 rounded-md shadow-md hover:bg-teal-600 w-full text-center">
+                    Upgrade Now {/* button_accent_filled */}
+                  </button>
+                ) : plan.name === 'Custom Plan' ? (
+                  <button className="bg-blue-600 text-white font-bold py-3 px-6 rounded-md shadow-md hover:bg-blue-700 w-full text-center">
+                    Contact Sales {/* button_primary_filled */}
+                  </button>
+                ) : (
+                  <button className="bg-white text-blue-600 border border-blue-600 font-bold py-3 px-6 rounded-md hover:bg-blue-50 w-full text-center">
+                    Get Started {/* button_secondary_outlined */}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Newsletter Subscription Section */}
+      <section className="bg-blue-600 py-16 px-4 text-white">
+        <div className="container mx-auto max-w-4xl text-center">
+          <EmailIcon className="mx-auto mb-6 w-12 h-12" />
+          <h2 className="text-3xl font-bold mb-4">Ready to get started?</h2> {/* heading_h2 */}
+          <p className="text-xl opacity-90 mb-8">
+            Sign up for our newsletter to receive updates, news, and exclusive offers.
+          </p>
+          <form
+            onSubmit={handleNewsletterSubmit}
+            className="max-w-md mx-auto flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4"
+          >
+            <input
+              type="email"
+              placeholder="Enter your email"
+              className="border border-gray-300 rounded-md py-3 px-4 focus:outline-none focus:ring-2 focus:ring-blue-300 flex-grow text-gray-800" // input_text combined with better focus style
+              value={email}
+              onChange={handleEmailChange}
+              required
+            />
+            <button
+              type="submit"
+              className="bg-teal-500 text-white font-bold py-3 px-6 rounded-md shadow-md hover:bg-teal-600 flex-shrink-0" // button_accent_filled
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* Simple Footer */}
+      <footer className="bg-gray-800 text-gray-300 py-8 px-4">
+        <div className="container mx-auto max-w-7xl flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+          <div className="mb-4 md:mb-0">
+            <p>&copy; {new Date().getFullYear()} YourCompany. All rights reserved.</p>
+            <p className="text-sm">Built with Next.js and Tailwind CSS.</p>
+          </div>
+          <div className="flex space-x-6">
+            <a href="#" className="hover:text-white transition-colors">
+              Privacy Policy
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Terms of Service
+            </a>
+            <a href="#" className="hover:text-white transition-colors">
+              Sitemap
+            </a>
+          </div>
         </div>
       </footer>
     </div>
