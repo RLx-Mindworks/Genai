@@ -266,29 +266,28 @@ export default Dashboard;
 
 **Component Mapping:**
 
-1.  **Dashboard**
-    *   Imports: `React, { useState }`
+*   **Dashboard**
+    *   Imports: `React`, `useState`
     *   Exports: `Dashboard` (default)
     *   Uses: `LineChart`, `BarChart`, `Calendar`
-    *   State: `moveGoal`, `plan`
 
-2.  **BarChart**
-    *   Imports: `None`
-    *   Exports: `BarChart` (named)
-    *   Used By: `Dashboard`
+*   **BarChart**
+    *   Imports: `React` (implicitly)
+    *   Uses: None
+    *   Used by: `Dashboard`
 
-3.  **LineChart**
-    *   Imports: `None`
-    *   Exports: `LineChart` (named)
-    *   Used By: `Dashboard`
+*   **LineChart**
+    *   Imports: `React` (implicitly)
+    *   Uses: None
+    *   Used by: `Dashboard`
 
-4.  **Calendar**
-    *   Imports: `None`
-    *   Exports: `Calendar` (named)
-    *   Used By: `Dashboard`
+*   **Calendar**
+    *   Imports: `React` (implicitly)
+    *   Uses: None
+    *   Used by: `Dashboard`
 
 **Relationships:**
 
 *   `Dashboard` imports and uses `LineChart`, `BarChart`, and `Calendar`.
-*   `BarChart`, `LineChart`, and `Calendar` are independent components that don't import anything from the provided code. They are only used by `Dashboard`.
-*   `Dashboard` manages state (`moveGoal`, `plan`) that affects its rendering.
+*   `BarChart`, `LineChart`, and `Calendar` are independent components that don't import or use any other components defined in this file, only implicitly using React.
+*   There are no circular dependencies.
