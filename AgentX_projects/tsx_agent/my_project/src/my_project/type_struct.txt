@@ -1,0 +1,19 @@
+# Data Type Structure
+
+User:
+  - id: integer
+  - name: string
+  - email: string
+  - role: enum(admin, editor, viewer)
+
+Project:
+  - id: integer
+  - title: string
+  - description: text
+  - owner_id: integer (references User.id)
+
+Task:
+  - id: integer
+  - title: string
+  - status: enum(todo, in_progress, done)
+  - project_id: integer (references Project.id)

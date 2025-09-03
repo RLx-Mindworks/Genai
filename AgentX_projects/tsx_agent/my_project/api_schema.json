@@ -1,0 +1,494 @@
+```json
+{
+  "/users": {
+    "get": {
+      "summary": "Get list of users",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "role": {
+                  "type": "string",
+                  "enum": [
+                    "admin",
+                    "editor",
+                    "viewer"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/projects": {
+    "post": {
+      "summary": "Create a new project",
+      "input": {
+        "content": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "integer"
+            },
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "description"
+          ]
+        }
+      },
+      "output": {
+        "201": {
+          "description": "Created",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/login": {
+    "post": {
+      "summary": "Authenticate user",
+      "input": {
+        "content": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "email",
+            "password"
+          ]
+        }
+      },
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "text/plain",
+          "schema": {
+            "type": "string",
+            "description": "JWT token"
+          }
+        }
+      }
+    }
+  },
+  "/users/{userId}": {
+    "get": {
+      "summary": "Get a specific user",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "admin",
+                  "editor",
+                  "viewer"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "summary": "Update a user",
+      "input": {
+        "content": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "role": {
+              "type": "string",
+              "enum": [
+                "admin",
+                "editor",
+                "viewer"
+              ]
+            }
+          },
+          "required": [
+            "name",
+            "email",
+            "role"
+          ]
+        }
+      },
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "role": {
+                "type": "string",
+                "enum": [
+                  "admin",
+                  "editor",
+                  "viewer"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "delete": {
+      "summary": "Deletes a user",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK"
+        }
+      }
+    }
+  },
+  "/projects/{projectId}": {
+    "get": {
+      "summary": "Gets a specific project",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "owner_id": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "summary": "Updates a project",
+      "input": {
+        "content": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "description"
+          ]
+        }
+      },
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "owner_id": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "delete": {
+      "summary": "Deletes a project",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK"
+        }
+      }
+    }
+  },
+  "/projects/{projectId}/tasks": {
+    "get": {
+      "summary": "Gets a list of tasks for a project",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "integer"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "todo",
+                    "in_progress",
+                    "done"
+                  ]
+                },
+                "project_id": {
+                  "type": "integer"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "post": {
+      "summary": "Creates a new task for a project",
+      "input": {
+        "content": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "todo",
+                "in_progress",
+                "done"
+              ]
+            }
+          },
+          "required": [
+            "title",
+            "status"
+          ]
+        }
+      },
+      "output": {
+        "201": {
+          "description": "Created",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "todo",
+                  "in_progress",
+                  "done"
+                ]
+              },
+              "project_id": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "/projects/{projectId}/tasks/{taskId}": {
+    "get": {
+      "summary": "Gets a specific task for a project",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "todo",
+                  "in_progress",
+                  "done"
+                ]
+              },
+              "project_id": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "put": {
+      "summary": "Updates a task for a project",
+      "input": {
+        "content": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "todo",
+                "in_progress",
+                "done"
+              ]
+            }
+          },
+          "required": [
+            "title",
+            "status"
+          ]
+        }
+      },
+      "output": {
+        "200": {
+          "description": "OK",
+          "content": "application/json",
+          "schema": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "title": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "todo",
+                  "in_progress",
+                  "done"
+                ]
+              },
+              "project_id": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "delete": {
+      "summary": "Deletes a task for a project",
+      "input": null,
+      "output": {
+        "200": {
+          "description": "OK"
+        }
+      }
+    }
+  }
+}
+```

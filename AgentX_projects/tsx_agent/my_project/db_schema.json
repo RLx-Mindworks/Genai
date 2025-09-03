@@ -1,0 +1,135 @@
+```json
+{
+  "schema": {
+    "tables": [
+      {
+        "name": "Users",
+        "fields": [
+          {
+            "name": "id",
+            "type": "INTEGER",
+            "primaryKey": true,
+            "autoIncrement": true
+          },
+          {
+            "name": "name",
+            "type": "VARCHAR(255)",
+            "allowNull": false
+          },
+          {
+            "name": "email",
+            "type": "VARCHAR(255)",
+            "unique": true,
+            "allowNull": false
+          },
+          {
+            "name": "password",
+            "type": "VARCHAR(255)",
+            "allowNull": false
+          },
+          {
+            "name": "role",
+            "type": "ENUM('admin', 'editor', 'viewer')",
+            "allowNull": false
+          }
+        ],
+        "constraints": []
+      },
+      {
+        "name": "Projects",
+        "fields": [
+          {
+            "name": "id",
+            "type": "INTEGER",
+            "primaryKey": true,
+            "autoIncrement": true
+          },
+          {
+            "name": "title",
+            "type": "VARCHAR(255)",
+            "allowNull": false
+          },
+          {
+            "name": "description",
+            "type": "TEXT"
+          },
+          {
+            "name": "owner_id",
+            "type": "INTEGER",
+            "allowNull": false,
+            "foreignKey": {
+              "table": "Users",
+              "field": "id",
+              "onDelete": "CASCADE"
+            }
+          }
+        ],
+        "constraints": [
+          {
+            "type": "FOREIGN KEY",
+            "fields": ["owner_id"],
+            "references": {
+              "table": "Users",
+              "fields": ["id"]
+            }
+          }
+        ],
+        "indexes":[
+          {
+            "name": "idx_projects_owner_id",
+            "fields": ["owner_id"]
+          }
+        ]
+      },
+      {
+        "name": "Tasks",
+        "fields": [
+          {
+            "name": "id",
+            "type": "INTEGER",
+            "primaryKey": true,
+            "autoIncrement": true
+          },
+          {
+            "name": "title",
+            "type": "VARCHAR(255)",
+            "allowNull": false
+          },
+          {
+            "name": "status",
+            "type": "ENUM('todo', 'in_progress', 'done')",
+            "allowNull": false,
+            "default": "todo"
+          },
+          {
+            "name": "project_id",
+            "type": "INTEGER",
+            "allowNull": false,
+            "foreignKey": {
+              "table": "Projects",
+              "field": "id",
+              "onDelete": "CASCADE"
+            }
+          }
+        ],
+        "constraints": [
+          {
+            "type": "FOREIGN KEY",
+            "fields": ["project_id"],
+            "references": {
+              "table": "Projects",
+              "fields": ["id"]
+            }
+          }
+        ],
+        "indexes":[
+          {
+            "name": "idx_tasks_project_id",
+            "fields": ["project_id"]
+          }
+        ]
+      }
+    ]
+  }
+}
+```

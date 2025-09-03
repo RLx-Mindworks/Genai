@@ -1,0 +1,52 @@
+```
+/
+├── /login
+├── /dashboard
+│   ├── /projects
+│   │   ├── /create
+│   │   ├── /{projectId}
+│   │   │   ├── /edit
+│   │   │   └── /tasks
+│   │   │       ├── /create
+│   │   │       └── /{taskId}
+│   └── /users
+│       ├── /create
+│       └── /{userId}
+└── /settings
+```
+
+**Summary of Site Navigation and Page Structure:**
+
+The sitemap outlines a web application with the following top-level sections:
+
+*   **/**: This represents the homepage or root of the application. It is the entry point for users.
+*   **/login**: This page allows users to log in to the application.
+*   **/dashboard**: This is the central hub after a user logs in. It contains the main functionalities of the application, organized into "Projects" and "Users" sections.
+*   **/settings**: This section likely contains user-specific settings or application-wide configurations.
+
+**Dashboard Subsections:**
+
+*   **/projects**: This section manages projects.
+    *   **/create**:  Allows users to create new projects.
+    *   **/{projectId}**: Represents a specific project, identified by its `projectId`.
+        *   **/edit**:  Allows users to edit the project's details.
+        *   **/tasks**: Manages tasks associated with the specific project.
+            *   **/create**: Allows users to create new tasks for the project.
+            *   **/{taskId}**: Represents a specific task within the project, identified by its `taskId`.
+*   **/users**: This section is for user management (likely accessible to administrators).
+    *   **/create**: Allows creation of new user accounts.
+    *   **/{userId}**: Represents a specific user, identified by their `userId`. This page likely allows viewing or modifying user details.
+
+**User Flow:**
+
+1.  A user starts at the root (/).
+2.  They can either log in via /login or potentially access public content (if any).
+3.  After logging in, they are directed to the /dashboard.
+4.  From the dashboard, users can:
+    *   Manage projects via /projects (create, view, edit, manage tasks).
+    *   Manage users via /users (create, view/edit).
+5.  Users can access settings via /settings.
+
+**In Summary:**
+
+The application revolves around project and user management. The navigational structure allows users to create, view, and modify projects and tasks, as well as manage user accounts. The dashboard serves as the central navigation point for authenticated users.
