@@ -1,0 +1,20 @@
+parse_markdown_task:
+  description: >
+    Read the markdown file at output/system_design.md, and extract all components, services, APIs, and their relationships.
+    Summarize them into a structured breakdown (as bullet points or JSON).
+  expected_output: >
+    A structured summary of the system design including key components, classes, APIs, and data flows.
+  agent: markdown_reader
+  input_file: output/system_design.md
+  output_file: output/system_components_plan.md
+
+generate_python_code_task:
+  description: >
+    Generate production-ready Python code based on the structured breakdown from the previous task.
+    Include classes, methods, and comments wherever appropriate.
+  expected_output: >
+    A Python code file with all core components implemented.
+  agent: code_generator
+  context:
+    - parse_markdown_task
+  output_file: output/system_code.py

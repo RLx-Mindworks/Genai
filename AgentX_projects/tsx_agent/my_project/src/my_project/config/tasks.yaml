@@ -1,0 +1,73 @@
+task_type_struct:
+  description: |
+    Analyze the following type structure file content and summarize the defined data structures,
+    relationships, and potential system requirements:
+
+    {type_struct}
+  expected_output: "A summary of the data structures and relationships from type_struct.txt"
+  agent: "type_struct_agent"
+
+task_api_spec:
+  description: |
+    Analyze the following API specification and summarize the endpoints, parameters,
+    expected responses, and system capabilities:
+
+    {api_spec}
+  expected_output: "A summary of the API endpoints, data flows, and integrations from api-spec.yaml"
+  agent: "api_spec_agent"
+
+task_sitemap:
+  description: |
+    Analyze the following sitemap and summarize the navigational structure, major sections,
+    and user flow:
+
+    {sitemap}
+  expected_output: "A summary of the site navigation and content structure from sitemap.txt"
+  agent: "sitemap_agent"
+
+task_architect:
+  description: |
+    Using the outputs from the previous three tasks (type_struct analysis, api_spec analysis,
+    sitemap analysis), create a detailed system design. Include:
+
+    - Major components
+    - Responsibilities of each component
+    - High-level interactions
+    - Any additional components needed based on the analyses
+  expected_output: "A complete system design document"
+  agent: "architect_agent"
+  context: ["task_type_struct", "task_api_spec", "task_sitemap"]
+
+
+task_dfd:
+  description: |
+    Create a Data Flow Diagram (DFD) in Mermaid diagram syntax based on the provided
+    System Design Document from the architect task. Show the main processes, external
+    entities, data stores, and data flows.
+
+    Output should be in valid Mermaid format for a DFD diagram.
+  expected_output: "Mermaid DFD Diagram in markdown format"
+  agent: "dfd_agent"
+  context: ["task_architect"]  
+
+
+task_generate_db_schema:
+  description: |
+    Read the contents of system_design.txt (the output of the architect task) and
+    generate a **JSON** representation of a relational database schema directly
+    from it (do NOT output SQL).
+
+    Save the result to a file named **db_schema.json**.
+  expected_output: "A JSON file (db_schema.json) that defines tables, fields, relationships, indexes, and constraints."
+  agent: "db_schema_agent"
+  context: ["task_architect"]
+
+task_api_schema_mapping:
+  description: |
+    Read api_spec.yaml (and, if helpful, system_design.txt) and create a JSON file
+    describing each endpoint's inputs and outputs in a compact, implementation-friendly format.
+    Save the result to a file named api_schema.json.
+  expected_output: "A JSON file (api_schema.json) listing all endpoints with input/output mapping."
+  agent: "api_schema_agent"
+  context: ["task_api_spec", "task_architect"]
+  output_file: "api_schema.json"

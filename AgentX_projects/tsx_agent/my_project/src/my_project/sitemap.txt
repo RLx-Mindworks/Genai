@@ -1,0 +1,14 @@
+/
+├── /login
+├── /dashboard
+│   ├── /projects
+│   │   ├── /create
+│   │   ├── /{projectId}
+│   │   │   ├── /edit
+│   │   │   └── /tasks
+│   │   │       ├── /create
+│   │   │       └── /{taskId}
+│   └── /users
+│       ├── /create
+│       └── /{userId}
+└── /settings
